@@ -7,6 +7,13 @@ import {
   buildPriorityExplanation,
 } from '../utils/reportUtils'
 
+const extractPeopleCount = (text: string): number => {
+  if (!text) return 1;
+
+  const match = text.match(/\d+/);
+  return match ? parseInt(match[0], 10) : 1;
+};
+
 /* ─── Types ─── */
 export interface GeminiAnalysisResult {
   priorityScore: number
@@ -151,8 +158,9 @@ export async function analyzeDisasterReport(
   message: string,
   location: string,
   disasterType: string,
-  peopleAffected: number,
-): Promise<GeminiAnalysisResult> {
+  peopleAffectedInput?: number,
+): Promise<GeminiAnalysisResult>{
+   let peopleAffected = peopleAffectedInput ?? 1
   console.log('\n╔══════════════════════════════════════════════════════╗')
   console.log('║        🤖 GEMINI AI SEVERITY ANALYSIS START         ║')
   console.log('╚══════════════════════════════════════════════════════╝')
@@ -160,6 +168,16 @@ export async function analyzeDisasterReport(
   console.log('[GeminiService] 📍 Location:', location)
   console.log('[GeminiService] 🔥 Disaster type:', disasterType)
   console.log('[GeminiService] 👥 People affected (user input):', peopleAffected)
+  // ✅ FIX: Extract correct people count from message
+const extractedPeople = extractPeopleCount(message);
+
+// Override wrong input (like 1)
+peopleAffected =
+  !peopleAffected || peopleAffected === 1
+    ? extractedPeople
+    : peopleAffected;
+
+console.log('[GeminiService] ✅ Final peopleAffected used:', peopleAffected);
 
   // If no API key, fall back to formula
   if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
