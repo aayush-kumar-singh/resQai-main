@@ -295,7 +295,7 @@ export const useUserLanding = () => {
       disasterType: aiResult.disasterType,
       recommendedAction: aiResult.recommendedAction,
       priorityExplanation: aiResult.priorityExplanation,
-      coords: deriveCoords(incidentDraft.location),
+      coords: await deriveCoords(incidentDraft.location),
       createdAt,
       source: 'Citizen',
     }
