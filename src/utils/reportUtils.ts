@@ -46,24 +46,45 @@ const parseCoordinatesFromLocation = (location: string): Coordinates | null => {
   return { lat, lng }
 }
 
-export const deriveCoords = (location: string): Coordinates => {
-  const parsed = parseCoordinatesFromLocation(location)
-  if (parsed) {
-    return parsed
-  }
 
+export const deriveCoords = async (location: string): Promise<Coordinates> => {
+ 
+  const parsed = parseCoordinatesFromLocation(location)
+  if (parsed) return parsed
+
+ 
   const normalized = location.toLowerCase()
   const anchor = LOCATION_ANCHORS.find((item) =>
     normalized.includes(item.zone.toLowerCase()),
   )
+  if (anchor) {
+    return {
+      lat: clamp(anchor.coords.lat + (Math.random() - 0.5) * 0.012, -90, 90),
+      lng: clamp(anchor.coords.lng + (Math.random() - 0.5) * 0.012, -180, 180),
+    }
+  }
 
-  const base = anchor?.coords ?? KOLKATA_CENTER
-  const jitterLat = (Math.random() - 0.5) * 0.012
-  const jitterLng = (Math.random() - 0.5) * 0.012
+  
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+      { headers: { 'Accept-Language': 'en' } }
+    )
+    const data = await res.json()
+    if (data.length > 0) {
+      return {
+        lat: parseFloat(data[0].lat),
+        lng: parseFloat(data[0].lon),
+      }
+    }
+  } catch {
+  
+  }
 
+  
   return {
-    lat: clamp(base.lat + jitterLat, -90, 90),
-    lng: clamp(base.lng + jitterLng, -180, 180),
+    lat: clamp(KOLKATA_CENTER.lat + (Math.random() - 0.5) * 0.012, -90, 90),
+    lng: clamp(KOLKATA_CENTER.lng + (Math.random() - 0.5) * 0.012, -180, 180),
   }
 }
 
