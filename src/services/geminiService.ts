@@ -35,6 +35,7 @@ const buildPrompt = (
   location: string,
   disasterType: string,
   peopleAffected: number,
+  language: string,
 ): string => `
 You are an expert disaster response AI triage system. Analyze this distress report carefully and return a severity assessment.
 
@@ -60,6 +61,7 @@ INSTRUCTIONS:
    - Minimum value: 1.
 5. Provide a recommended emergency response action (1-2 sentences).
 6. Provide a brief explanation of why you assigned this score (1-2 sentences).
+7. IMPORTANT: Write the "recommendedAction" and "priorityExplanation" fields natively in ${language === 'hi' ? 'Hindi' : language === 'bn' ? 'Bengali' : 'English'}, but strictly keep all JSON keys and the "priorityLabel" / "disasterType" as exact English strings.
 
 RESPOND WITH ONLY THIS JSON — no markdown, no code fences, no extra text:
 {
@@ -159,6 +161,7 @@ export async function analyzeDisasterReport(
   location: string,
   disasterType: string,
   peopleAffectedInput?: number,
+  language: string = 'en'
 ): Promise<GeminiAnalysisResult>{
    let peopleAffected = peopleAffectedInput ?? 1
   console.log('\n╔══════════════════════════════════════════════════════╗')
@@ -186,7 +189,7 @@ console.log('[GeminiService] ✅ Final peopleAffected used:', peopleAffected);
     return fallbackAnalysis(message, peopleAffected)
   }
 
-  const prompt = buildPrompt(message, location, disasterType, peopleAffected)
+  const prompt = buildPrompt(message, location, disasterType, peopleAffected, language)
 
   console.log('[GeminiService] 📤 Sending request to Gemini API...')
   console.log('[GeminiService] 📤 API URL:', GEMINI_API_URL)
@@ -256,5 +259,96 @@ console.log('[GeminiService] ✅ Final peopleAffected used:', peopleAffected);
     console.error('[GeminiService] ❌ Network/fetch error:', err)
     console.warn('[GeminiService] ⚠️ Falling back to formula')
     return fallbackAnalysis(message, peopleAffected)
+  }
+}
+
+/* ─── Chatbot API Call ─── */
+const getLanguageName = (code: string): string => {
+  switch (code) {
+    case 'hi': return 'Hindi'
+    case 'bn': return 'Bengali'
+    default:   return 'English'
+  }
+}
+
+const CHATBOT_SYSTEM_PROMPT = (language: string) => `
+You are a friendly and knowledgeable Disaster Safety Assistant for the ResQAI platform.
+
+YOUR ROLE:
+- Help citizens with disaster preparedness, safety precautions, and emergency guidance.
+- Cover earthquakes, floods, fires, cyclones, landslides, and medical emergencies.
+
+RESPONSE RULES:
+1. Keep answers short, clear, and easy to understand for common people.
+2. Use numbered steps when giving instructions.
+3. If the user asks about a specific disaster, structure your answer into:
+   **Before** — preparation steps
+   **During** — immediate actions
+   **After** — recovery steps
+4. If the user asks for emergency numbers, provide India's key numbers:
+   - Police: 100
+   - Fire: 101
+   - Ambulance: 102
+   - Disaster Management: 108
+   - National Emergency: 112
+   - Women Helpline: 1091
+5. If the user asks a general question, give a concise helpful answer related to safety.
+6. ALWAYS respond in ${getLanguageName(language)}.
+7. Do NOT use markdown code fences. Use plain text with numbered lists and bold markers like **Before**, **During**, **After**.
+8. Be empathetic and reassuring in your tone.
+`
+
+export async function chatWithDisasterAI(
+  userMessage: string,
+  language: string = 'en'
+): Promise<string> {
+  console.log('[GeminiChat] 💬 User message:', userMessage)
+  console.log('[GeminiChat] 🌐 Language:', language)
+
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
+    console.warn('[GeminiChat] ⚠️ No API key configured')
+    return 'I am currently unavailable. Please check back later or call the emergency helpline at 112.'
+  }
+
+  const systemPrompt = CHATBOT_SYSTEM_PROMPT(language)
+
+  try {
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: `${systemPrompt}\n\nUser question: ${userMessage}` }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('[GeminiChat] ❌ API error:', response.status, errorText)
+      return 'Sorry, I encountered an error. Please try again in a moment.'
+    }
+
+    const data = await response.json()
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+
+    if (!text) {
+      console.error('[GeminiChat] ❌ No text in response')
+      return 'Sorry, I could not generate a response. Please try again.'
+    }
+
+    console.log('[GeminiChat] ✅ AI response received')
+    return text.trim()
+
+  } catch (err) {
+    console.error('[GeminiChat] ❌ Network error:', err)
+    return 'Sorry, there was a connection error. Please check your internet and try again.'
   }
 }

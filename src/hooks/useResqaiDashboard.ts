@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSharedReports } from '../context/ReportsContext'
 import {
   PRIORITY_LEVELS,
@@ -41,6 +42,7 @@ interface DashboardState {
 }
 
 export const useResqaiDashboard = (): DashboardState => {
+  const { i18n } = useTranslation()
   // Shared reports from context — same array the user page writes to
   const { reports, addReport } = useSharedReports()
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('All')
@@ -251,6 +253,7 @@ export const useResqaiDashboard = (): DashboardState => {
       location,
       'Unknown',
       peopleAffected,
+      i18n.language
     )
 
     const createdAt = new Date().toISOString()
@@ -268,7 +271,7 @@ export const useResqaiDashboard = (): DashboardState => {
       disasterType: aiResult.disasterType,
       recommendedAction: aiResult.recommendedAction,
       priorityExplanation: aiResult.priorityExplanation,
-      coords: deriveCoords(location),
+      coords: await deriveCoords(location),
       createdAt,
       source: 'Citizen',
       imageName: draft.imageName || undefined,

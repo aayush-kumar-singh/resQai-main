@@ -15,8 +15,8 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 85% 10%, rgba(42, 115, 148, 0.14), transparent 36%),
-    radial-gradient(circle at 10% 90%, rgba(35, 141, 138, 0.12), transparent 32%);
+    radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.08), transparent 36%),
+    radial-gradient(circle at 10% 90%, rgba(6, 95, 70, 0.06), transparent 32%);
 }
 
 .app-header {
@@ -27,12 +27,13 @@
   gap: 18px;
   align-items: flex-start;
   padding: 18px 20px;
-  border-radius: 18px;
-  border: 1px solid rgba(150, 175, 210, 0.22);
-  background: linear-gradient(130deg, rgba(12, 30, 50, 0.94), rgba(11, 23, 39, 0.9));
+  border-radius: 20px;
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  background: linear-gradient(130deg, rgba(7, 21, 37, 0.8), rgba(10, 30, 54, 0.7));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 12px 30px rgba(2, 6, 14, 0.34);
+    0 12px 36px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px) saturate(1.2);
   animation: rise-in 0.45s ease-out both;
 }
 
@@ -104,14 +105,19 @@
 }
 
 .panel-card {
-  border-radius: 16px;
-  border: 1px solid rgba(145, 173, 203, 0.2);
-  background: linear-gradient(160deg, rgba(10, 27, 45, 0.95), rgba(9, 21, 35, 0.9));
+  border-radius: 18px;
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  background: linear-gradient(160deg, rgba(7, 21, 37, 0.8), rgba(10, 30, 54, 0.65));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 22px rgba(1, 4, 11, 0.35);
-  backdrop-filter: blur(8px);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 28px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px) saturate(1.2);
   animation: rise-in 0.45s ease-out both;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.panel-card:hover {
+  border-color: rgba(14, 165, 233, 0.2);
 }
 
 .card-heading {
@@ -149,24 +155,38 @@
 }
 
 .metric-tile {
-  border-radius: 12px;
-  padding: 9px 11px;
-  border: 1px solid rgba(128, 154, 182, 0.24);
-  background: rgba(13, 32, 51, 0.76);
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(14, 165, 233, 0.12);
+  background: rgba(7, 21, 37, 0.6);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.metric-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 165, 233, 0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(14, 165, 233, 0.06);
 }
 
 .metric-tile.critical {
-  background: linear-gradient(145deg, rgba(92, 24, 29, 0.5), rgba(40, 20, 31, 0.45));
-  border-color: rgba(246, 112, 112, 0.44);
+  background: linear-gradient(145deg, rgba(92, 24, 29, 0.4), rgba(40, 20, 31, 0.35));
+  border-color: rgba(248, 113, 113, 0.35);
+  animation: critical-pulse 3s ease-in-out infinite;
+}
+
+@keyframes critical-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(248, 113, 113, 0); }
+  50% { box-shadow: 0 0 15px rgba(248, 113, 113, 0.12); }
 }
 
 .metric-tile.high {
-  background: linear-gradient(145deg, rgba(96, 52, 18, 0.5), rgba(49, 30, 20, 0.46));
-  border-color: rgba(243, 167, 86, 0.45);
+  background: linear-gradient(145deg, rgba(96, 52, 18, 0.4), rgba(49, 30, 20, 0.35));
+  border-color: rgba(243, 167, 86, 0.35);
 }
 
 .metric-tile.neutral {
-  background: linear-gradient(145deg, rgba(26, 52, 78, 0.55), rgba(20, 33, 52, 0.5));
+  background: linear-gradient(145deg, rgba(10, 30, 54, 0.5), rgba(7, 21, 37, 0.4));
 }
 
 .metric-label {
@@ -274,25 +294,25 @@ textarea {
 .cta-button {
   width: 100%;
   border: none;
-  border-radius: 12px;
-  padding: 11px 12px;
-  background: linear-gradient(132deg, #ff5e50, #ff8d49);
-  color: #1d120d;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(132deg, #ef4444, #f97316);
+  color: #fff;
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(255, 98, 76, 0.35);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
 }
 
 .cta-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(255, 104, 80, 0.4);
-  filter: brightness(1.03);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4), 0 0 20px rgba(239, 68, 68, 0.15);
+  filter: brightness(1.06);
 }
 
 .submit-status {
@@ -334,33 +354,36 @@ textarea {
 
 .feed-item {
   width: 100%;
-  border: 1px solid rgba(134, 160, 189, 0.24);
-  border-radius: 12px;
-  background: rgba(12, 29, 47, 0.88);
-  color: #e9f3ff;
+  border: 1px solid rgba(14, 165, 233, 0.15);
+  border-radius: 14px;
+  background: rgba(7, 21, 37, 0.75);
+  backdrop-filter: blur(8px);
+  color: #e0f2fe;
   cursor: pointer;
   text-align: left;
-  padding: 10px;
+  padding: 11px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   animation: feed-enter 0.4s ease-out both;
   animation-delay: var(--delay, 0ms);
   transition:
-    border-color 0.16s ease,
-    background-color 0.16s ease,
-    transform 0.16s ease;
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .feed-item:hover {
-  border-color: rgba(118, 174, 217, 0.52);
-  transform: translateY(-1px);
+  border-color: rgba(14, 165, 233, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(14, 165, 233, 0.06);
 }
 
 .feed-item.selected {
-  border-color: rgba(96, 188, 243, 0.85);
-  background: rgba(16, 39, 62, 0.95);
-  box-shadow: 0 0 0 1px rgba(96, 188, 243, 0.4);
+  border-color: rgba(14, 165, 233, 0.6);
+  background: rgba(10, 30, 54, 0.9);
+  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.3), 0 0 15px rgba(14, 165, 233, 0.08);
 }
 
 .feed-item-head {
@@ -566,11 +589,12 @@ textarea {
   right: 14px;
   top: 14px;
   width: min(340px, 46%);
-  border-radius: 13px;
-  border: 1px solid rgba(148, 176, 205, 0.34);
-  background: linear-gradient(152deg, rgba(11, 32, 52, 0.95), rgba(9, 21, 37, 0.93));
-  box-shadow: 0 12px 26px rgba(3, 8, 16, 0.35);
-  padding: 11px;
+  border-radius: 15px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  background: linear-gradient(152deg, rgba(7, 21, 37, 0.92), rgba(10, 30, 54, 0.88));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px) saturate(1.1);
+  padding: 12px;
 }
 
 .ai-insights h3 {
