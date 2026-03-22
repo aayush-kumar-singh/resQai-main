@@ -1,4 +1,5 @@
 import type { HelplineInfo } from '../../hooks/useUserLanding'
+import { useTranslation } from 'react-i18next'
 
 interface LiveHelplinePanelProps {
   helplines: HelplineInfo[]
@@ -7,10 +8,12 @@ interface LiveHelplinePanelProps {
 const statusClass = (s: string) =>
   s === 'ONLINE' ? 'badge-online' : s === 'HIGH LOAD' ? 'badge-high-load' : 'badge-offline'
 
-export const LiveHelplinePanel = ({ helplines }: LiveHelplinePanelProps) => (
+export const LiveHelplinePanel = ({ helplines }: LiveHelplinePanelProps) => {
+  const { t } = useTranslation()
+  return (
   <section className="helpline-section" id="helpline-panel">
-    <h2 className="section-title">Live Helpline Status</h2>
-    <p className="section-subtitle">Real-time availability of emergency helplines across the region</p>
+    <h2 className="section-title">{t('portal.helplinePanel.title')}</h2>
+    <p className="section-subtitle">{t('portal.helplinePanel.subtitle')}</p>
 
     <div className="helpline-grid">
       {helplines.map(h => (
@@ -26,15 +29,15 @@ export const LiveHelplinePanel = ({ helplines }: LiveHelplinePanelProps) => (
 
           <div className="helpline-stats">
             <div className="helpline-stat">
-              <span className="hs-label">Active Calls</span>
+              <span className="hs-label">{t('portal.helplinePanel.activeCalls')}</span>
               <span className="hs-value">{h.calls}</span>
             </div>
             <div className="helpline-stat">
-              <span className="hs-label">Wait Time</span>
+              <span className="hs-label">{t('portal.helplinePanel.waitTime')}</span>
               <span className="hs-value">{h.waitTime}</span>
             </div>
             <div className="helpline-stat">
-              <span className="hs-label">Operators</span>
+              <span className="hs-label">{t('portal.helplinePanel.operators')}</span>
               <span className="hs-value">{h.operators}</span>
             </div>
           </div>
@@ -42,4 +45,5 @@ export const LiveHelplinePanel = ({ helplines }: LiveHelplinePanelProps) => (
       ))}
     </div>
   </section>
-)
+  )
+}

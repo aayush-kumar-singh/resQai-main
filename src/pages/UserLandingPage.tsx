@@ -3,7 +3,10 @@ import { HeroSection } from '../components/user/HeroSection'
 import { HowItWorks } from '../components/user/HowItWorks'
 import { LiveHelplinePanel } from '../components/user/LiveHelplinePanel'
 import { CitizenPortal } from '../components/user/CitizenPortal'
+import { SafetyGuide } from '../components/user/SafetyGuide'
+import { Chatbot } from '../components/user/Chatbot'
 import { useUserLanding } from '../hooks/useUserLanding'
+import '../styles/chatbot.css'
 
 export const UserLandingPage = () => {
   const landing = useUserLanding()
@@ -43,7 +46,10 @@ export const UserLandingPage = () => {
           districts={landing.districts}
           helplines={landing.helplines}
         />
+        <SafetyGuide />
       </main>
+
+      <Chatbot />
 
       <footer className="landing-footer">
         <p>© 2026 ResQAI — AI-Powered Disaster Response Platform</p>

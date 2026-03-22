@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSharedReports } from '../context/ReportsContext'
+import { useTranslation } from 'react-i18next'
 import {
   deriveCoords,
 } from '../utils/reportUtils'
@@ -128,6 +129,7 @@ const DISASTER_OPTIONS = [
 
 /* ─── Hook ─── */
 export const useUserLanding = () => {
+  const { i18n } = useTranslation()
   /* Shared reports context — same array the admin dashboard reads */
   const { addReport } = useSharedReports()
   /* Clock */
@@ -263,6 +265,7 @@ export const useUserLanding = () => {
       incidentDraft.location,
       incidentDraft.disasterType || 'Unknown',
       1,
+      i18n.language
     )
 
     console.log('\n✅ [submitIncident] AI Analysis Complete!')

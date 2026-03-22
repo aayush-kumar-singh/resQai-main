@@ -1,0 +1,224 @@
+{
+  "nav": {
+    "adminLogin": "Admin Login"
+  },
+  "hero": {
+    "liveIntel": "Live Disaster Intelligence",
+    "title1": "Every Signal Matters.",
+    "title2": "Every Second Counts.",
+    "subtitle": "ResQAI transforms unstructured distress signals into prioritized, map-based rescue actions in real time — connecting citizens and emergency teams through AI-driven coordination.",
+    "reportBtn": "Report Incident Now",
+    "mapBtn": "View Live Map",
+    "stats": {
+      "citizens": "Citizens Protected",
+      "time": "Avg Response Time",
+      "volunteers": "Active Volunteers",
+      "accuracy": "AI Accuracy"
+    }
+  },
+  "portal": {
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "From signal to rescue in under 5 minutes",
+      "step": "STEP",
+      "s1Title": "Signal Ingestion",
+      "s1Desc": "Distress reports from citizens, social media, and IoT sensors are captured in real time.",
+      "s2Title": "AI Triage",
+      "s2Desc": "Our AI engine scores severity, identifies disaster type, and prioritizes each signal instantly.",
+      "s3Title": "Rescue Mapped",
+      "s3Desc": "Incidents are plotted on a live map with hotspot clustering and route optimization.",
+      "s4Title": "Teams Dispatched",
+      "s4Desc": "Nearest available rescue teams are alerted and dispatched with full situational context."
+    },
+    "helplinePanel": {
+      "title": "Live Helpline Status",
+      "subtitle": "Real-time availability of emergency helplines across the region",
+      "activeCalls": "Active Calls",
+      "waitTime": "Wait Time",
+      "operators": "Operators"
+    },
+    "volunteer": {
+      "title": "Volunteer Registration",
+      "desc": "Help your community during disasters. Register your skills and availability.",
+      "name": "Full Name",
+      "phone": "Phone",
+      "submit": "Submit Application"
+    },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "safeRoute": {
+      "tabTitle": "Find Safe Route",
+      "subtitle": "Navigate safely avoiding high-risk disaster zones.",
+      "startLocation": "Current Location",
+      "startPlaceholder": "Where are you now?",
+      "destination": "Destination",
+      "destPlaceholder": "Where do you want to go?",
+      "findRoute": "Find Safe Route",
+      "avoidHighRisk": "Avoid High Risk Areas",
+      "calculating": "Calculating safest route...",
+      "safe": "✅ This route is relatively safe",
+      "warning": "⚠️ This route passes through high-risk areas",
+      "error": "❌ Unable to find route. Please check the locations.",
+      "legendTitle": "Danger Zones"
+    },
+    "title": "Citizen Portal",
+    "subtitle": "Report incidents, track responses, volunteer, or find helplines",
+    "tabs": {
+      "report": "Report Incident",
+      "track": "Track Report",
+      "volunteer": "Volunteer",
+      "helplines": "Helplines",
+      "safeRoute": "Safe Route"
+    },
+    "wizard": {
+      "step": "Step {{current}} of {{total}}",
+      "q1": "What is the emergency?",
+      "disasterType": "Disaster Type",
+      "severity": "Severity Level",
+      "description": "Situation Description",
+      "descPlaceholder": "Describe the situation in detail — hazards, trapped individuals, urgency level...",
+      "q2": "Where is it happening?",
+      "location": "Location",
+      "locPlaceholder": "Area, street, landmark",
+      "gpsBtn": "GPS",
+      "evidence": "Image Evidence (Optional)",
+      "uploadText": "Click to upload photo or video",
+      "attached": "Attached: {{filename}}",
+      "q3": "Your Details",
+      "anonLabel": "Report anonymously",
+      "nameLabel": "Your Name",
+      "phoneLabel": "Phone",
+      "warning": "By submitting, this alerts the command center and nearby rescue units immediately. False reporting is punishable.",
+      "back": "Back",
+      "continue": "Continue ➔",
+      "submit": "🚨 Submit Emergency File",
+      "processing": "Processing...",
+      "successTitle": "Report Received",
+      "successDesc": "Your report has been sent to the command center. Our AI is triaging it to nearby rescue units.",
+      "trackingId": "Tracking ID",
+      "trackStatus": "Track Status →"
+    },
+    "track": {
+      "enterId": "Enter Incident ID",
+      "placeholder": "e.g. RQ-123456",
+      "trackBtn": "Track",
+      "status": "Status",
+      "aiPriority": "AI Priority",
+      "response": "Response",
+      "timeline": "Live Timeline"
+    }
+  },
+  "admin": {
+    "appHeader": {
+      "aiIntelligence": "AI-Powered Disaster Intelligence",
+      "title": "ResQAI Command Center",
+      "subtitle": "Unstructured distress signals become prioritized, map-based action in real time.",
+      "liveActive": "Live feed active"
+    },
+    "snapshot": {
+      "title": "Operational Snapshot",
+      "subtitle": "Decision support at a glance",
+      "critical": "Critical",
+      "high": "High",
+      "activeZones": "Active Zones",
+      "visible": "Visible"
+    },
+    "submitReport": {
+      "title": "Submit Distress Report",
+      "subtitle": "Fast mobile-first intake for citizens and volunteers",
+      "details": "Situation details",
+      "placeholder": "Describe what is happening, key hazards, and urgency.",
+      "location": "Location",
+      "autoBtn": "Auto",
+      "people": "People affected",
+      "image": "Image (opt)",
+      "submitBtn": "Send Emergency Report",
+      "processing": "Sending to Command Center..."
+    },
+    "liveFeed": {
+      "title": "Live Incoming Feed",
+      "subtitle": "{{shown}} shown / {{total}} total reports",
+      "live": "Live",
+      "allPriority": "All Priorities",
+      "allTypes": "All Types",
+      "affected": "affected",
+      "empty": "No reports match the current filters.",
+      "noReports": "No reports yet. Signals will appear here."
+    },
+    "detail": {
+      "title": "Report Detail View",
+      "subtitle": "Expanded intelligence for field decisions",
+      "type": "Disaster Type",
+      "location": "Location",
+      "impact": "Impact",
+      "source": "Source",
+      "aiAssessment": "AI Priority Assessment",
+      "recommended": "Recommended Response",
+      "empty": "Select a report from the live feed to inspect full detail."
+    },
+    "map": {
+      "title": "AI Territorial Analysis",
+      "highRisk": "High-Risk Zone",
+      "threat": "Prevalent Threat",
+      "suggested": "Suggested Deployment",
+      "reports": "reports",
+      "incidents": "incidents",
+      "empty": "No matching reports on the map.",
+      "score": "Score",
+      "impact": "Impact",
+      "pax": "pax"
+    }
+  },
+  "safety": {
+    "title": "Safety & Survival Guide",
+    "subtitle": "Essential life-saving protocols for before, during, and after disasters",
+    "tip": "Quick Survival Tip",
+    "before": "Before",
+    "during": "During",
+    "after": "After",
+    "earthquake": {
+      "title": "Earthquake",
+      "before": ["Fasten heavy furniture to walls", "Prepare an emergency kit with 3-day supplies", "Identify safe spots under sturdy desks"],
+      "during": ["Drop, Cover, and Hold On", "Stay away from glass windows and exterior walls", "If outdoors, move to an open area away from buildings"],
+      "after": ["Check for injuries and apply first aid", "Inspect home for structural damage", "Listen to radio for emergency updates"],
+      "tip": "Do not use elevators during or immediately after the quake."
+    },
+    "flood": {
+      "title": "Flood",
+      "before": ["Store valuables and documents in waterproof containers", "Know your local evacuation routes", "Move essential items to upper floors"],
+      "during": ["Evacuate immediately to higher ground", "Do not walk or drive through flowing water", "Disconnect electrical appliances"],
+      "after": ["Avoid floodwaters as they may be contaminated", "Do not use wet electrical equipment", "Clean and disinfect everything that got wet"],
+      "tip": "Just 6 inches of moving water can knock you down."
+    },
+    "fire": {
+      "title": "Fire",
+      "before": ["Install smoke alarms on every level", "Keep fire extinguishers accessible", "Plan and practice an escape route"],
+      "during": ["Get out quickly and stay close to the floor", "Check doors for heat before opening", "If clothes catch fire: Stop, Drop, and Roll"],
+      "after": ["Do not re-enter the building until cleared", "Contact local disaster relief", "Check with officials before using utilities"],
+      "tip": "Never use an elevator during a fire evacuation."
+    },
+    "cyclone": {
+      "title": "Cyclone",
+      "before": ["Secure loose outdoor items", "Board up windows and doors", "Stock up on batteries and non-perishable food"],
+      "during": ["Stay indoors away from windows", "Turn off main power if instructed", "Monitor weather alerts closely"],
+      "after": ["Watch out for fallen power lines", "Do not enter heavily damaged buildings", "Drink boiled or purified water"],
+      "tip": "The calm 'eye' of the storm is deceptive. Stay inside."
+    }
+  },
+  "chatbot": {
+    "title": "Disaster AI Assistant",
+    "subtitle": "Ask me about disaster safety",
+    "placeholder": "Ask about disaster safety...",
+    "send": "Send",
+    "typing": "AI is thinking...",
+    "welcome": "Hello! 👋 I'm your Disaster Safety Assistant. Ask me about earthquake, flood, fire, or cyclone safety — or tap a quick topic below.",
+    "error": "Sorry, I couldn't process that. Please try again.",
+    "quickEarthquake": "🏚️ Earthquake safety",
+    "quickFlood": "🌊 Flood precautions",
+    "quickEmergency": "📞 Emergency numbers"
+  }
+}

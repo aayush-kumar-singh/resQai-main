@@ -1,9 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600&display=swap');
 
 :root {
   font-family: 'Manrope', 'Inter', 'Segoe UI', sans-serif;
-  color: #eaf3ff;
-  background: #08121f;
+  color: #e0f2fe;
+  background: #071525;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,6 +23,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body,
 #root {
@@ -29,14 +37,46 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 18% 22%, #15304d 0%, transparent 40%),
-    radial-gradient(circle at 84% 78%, #113846 0%, transparent 34%),
-    linear-gradient(150deg, #07111d, #091726 44%, #0a1a2d);
-  color: #eaf3ff;
+    radial-gradient(ellipse at 18% 22%, rgba(14, 165, 233, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 84% 78%, rgba(6, 95, 70, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.04) 0%, transparent 60%),
+    linear-gradient(170deg, #071525 0%, #0a1e36 40%, #0c2640 70%, #071525 100%);
+  color: #e0f2fe;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: rgba(14, 165, 233, 0.35);
+  color: #fff;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.4);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(14, 165, 233, 0.25) transparent;
 }
 
 h1,
@@ -51,4 +91,16 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+/* ─── Utility animations available globally ─── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
 }
