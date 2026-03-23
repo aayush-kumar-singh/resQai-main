@@ -122,7 +122,7 @@ export const HeroSection = ({ statCards }: HeroSectionProps) => {
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => {
-                const portal = document.querySelector('.portal-section')
+                const portal = document.getElementById('citizen-portal')
                 if (portal) portal.scrollIntoView({ behavior: 'smooth' })
               }}
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-alert-500 to-red-600 hover:from-alert-400 hover:to-red-500 transition-all text-white px-8 py-4 rounded-xl font-bold shadow-glow-alert hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] w-full sm:w-auto"

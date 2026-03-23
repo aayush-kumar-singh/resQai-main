@@ -18,6 +18,7 @@ import type {
 import {
   deriveCoords,
   detectZone,
+  mergeIncidentsByLocation,
 } from '../utils/reportUtils'
 
 interface DashboardState {
@@ -44,7 +45,7 @@ interface DashboardState {
 export const useResqaiDashboard = (): DashboardState => {
   const { i18n } = useTranslation()
   // Shared reports from context — same array the user page writes to
-  const { reports, addReport } = useSharedReports()
+  const { reports, addReport, updateReport } = useSharedReports()
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('All')
   const [disasterFilter, setDisasterFilter] = useState<DisasterFilter>('All')
   const [selectedReportId, setSelectedReportId] = useState<string>('')
@@ -243,6 +244,26 @@ export const useResqaiDashboard = (): DashboardState => {
     // Generate ONE unique ID
     const reportId = crypto.randomUUID()
 
+    // Derive coordinates early so we can check for nearby duplicates
+    const newCoords = await deriveCoords(location)
+
+    // ─── Duplicate / Merge Detection ────────────────────────────────────────
+    const { isDuplicate, existingReport } = mergeIncidentsByLocation(newCoords, reports)
+
+    if (isDuplicate && existingReport) {
+      // Merge: increment peopleAffected on the existing report
+      updateReport(existingReport.id, {
+        peopleAffected: existingReport.peopleAffected + peopleAffected,
+      })
+      setSubmitStatus(
+        '\u{1F6A8} Help has already been dispatched to your location. Stay safe.',
+      )
+      setDraft({ message: '', location, peopleAffected: '', imageName: '' })
+      setTimeout(() => setIsSubmitting(false), 600)
+      return
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
     // ─── Call Gemini AI for severity analysis ───
     const { analyzeDisasterReport } = await import('../services/geminiService')
 
@@ -271,7 +292,7 @@ export const useResqaiDashboard = (): DashboardState => {
       disasterType: aiResult.disasterType,
       recommendedAction: aiResult.recommendedAction,
       priorityExplanation: aiResult.priorityExplanation,
-      coords: await deriveCoords(location),
+      coords: newCoords,
       createdAt,
       source: 'Citizen',
       imageName: draft.imageName || undefined,

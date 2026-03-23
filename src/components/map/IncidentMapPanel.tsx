@@ -6,7 +6,6 @@ import {
   Marker,
   Popup,
   TileLayer,
-  Tooltip,
   useMap,
 } from 'react-leaflet'
 import type { AIInsights, HotspotCluster, Report } from '../../types/report'
@@ -175,11 +174,7 @@ export const IncidentMapPanel = ({
                     if (zoneRepresentative) onSelectReport(zoneRepresentative.id)
                   },
                 }}
-              >
-                <Tooltip direction="top" offset={[0, -8]} className="!bg-brand-950 !text-white !border-white/10 !font-bold">
-                  {cluster.zone} HOTSPOT ({cluster.count} signals)
-                </Tooltip>
-              </CircleMarker>
+              />
             )
           })}
 

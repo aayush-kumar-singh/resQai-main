@@ -2,7 +2,14 @@ import {
   LOCATION_ANCHORS,
   RESPONSE_PLAYBOOK,
 } from '../data/reportData'
-import type { Coordinates, DisasterType, PriorityLabel } from '../types/report'
+import type { Coordinates, DisasterType, PriorityLabel, Report } from '../types/report'
+import { haversineDistance } from './routeUtils'
+
+// Re-export so components only need to import from one place
+export { haversineDistance } from './routeUtils'
+
+/** Radius in metres within which two reports are considered the same incident */
+export const DUPLICATE_RADIUS_M = 200
 
 const KOLKATA_CENTER: Coordinates = {
   lat: 22.5726,
@@ -231,4 +238,36 @@ export const buildPriorityExplanation = (
   }
 
   return `Score ${score}/100 computed from ${factors.join(', ')}.`
+}
+
+// ─── Duplicate / Merge Detection ────────────────────────────────────────────
+
+export interface MergeResult {
+  /** The existing report that was found nearby, if any */
+  existingReport: Report | null
+  /** Whether a nearby duplicate was found */
+  isDuplicate: boolean
+}
+
+/**
+ * Check if a new report overlaps with any existing incident within DUPLICATE_RADIUS_M.
+ * Returns the nearest existing report if found.
+ */
+export const mergeIncidentsByLocation = (
+  newCoords: Coordinates,
+  existingReports: Report[],
+  radiusM: number = DUPLICATE_RADIUS_M,
+): MergeResult => {
+  for (const report of existingReports) {
+    const dist = haversineDistance(
+      newCoords.lat,
+      newCoords.lng,
+      report.coords.lat,
+      report.coords.lng,
+    )
+    if (dist <= radiusM) {
+      return { existingReport: report, isDuplicate: true }
+    }
+  }
+  return { existingReport: null, isDuplicate: false }
 }

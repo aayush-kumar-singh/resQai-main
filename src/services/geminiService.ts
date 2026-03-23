@@ -305,9 +305,167 @@ export async function chatWithDisasterAI(
   console.log('[GeminiChat] 💬 User message:', userMessage)
   console.log('[GeminiChat] 🌐 Language:', language)
 
+  // ─── Local knowledge base (works without API key) ───────────────────────
+  const LOCAL_KB: Array<{ keywords: string[]; answer: string }> = [
+    {
+      keywords: ['earthquake', 'quake', 'tremor', 'seismic', 'bhookamp'],
+      answer: `**Earthquake Safety Guide**
+
+**Before:**
+1. Secure heavy furniture and shelves to walls.
+2. Identify safe spots in each room (under sturdy tables, against inner walls).
+3. Keep an emergency kit ready (water, food, torch, first aid).
+
+**During:**
+1. Drop, Cover, and Hold On — get under a sturdy table.
+2. Stay away from windows, doors, and exterior walls.
+3. If outdoors, move away from buildings and power lines.
+
+**After:**
+1. Check for injuries. Call 112 for emergencies.
+2. Inspect your home for structural damage before re-entering.
+3. Be alert for aftershocks.
+
+Emergency: 112 | Disaster Help: 1078`,
+    },
+    {
+      keywords: ['flood', 'flooding', 'water', 'submerged', 'baaadh'],
+      answer: `**Flood Safety Guide**
+
+**Before:**
+1. Move valuables and documents to upper floors.
+2. Know your evacuation routes and local shelter locations.
+3. Keep emergency supplies ready.
+
+**During:**
+1. Move to higher ground immediately.
+2. Do NOT walk or drive through floodwater — 15cm can knock you down, 60cm can sweep a car.
+3. Avoid contact with floodwater — it may be contaminated.
+
+**After:**
+1. Do not return home until authorities say it is safe.
+2. Boil water before drinking.
+3. Check for structural damage.
+
+Emergency: 112 | Flood Helpline: 1078`,
+    },
+    {
+      keywords: ['fire', 'smoke', 'burn', 'aag', 'blaze'],
+      answer: `**Fire Safety Guide**
+
+**Before:**
+1. Install and test smoke detectors.
+2. Plan and practice a home escape route.
+3. Keep fire extinguishers accessible.
+
+**During:**
+1. Get out immediately — don't try to collect belongings.
+2. Crawl low under smoke; smoke rises.
+3. Close doors behind you to slow fire spread.
+4. If you can't escape, signal from a window.
+
+**After:**
+1. Call 101 (Fire) or 112 (National Emergency).
+2. Do not re-enter until cleared by firefighters.
+
+Emergency: 101 (Fire) | 112 (National Emergency)`,
+    },
+    {
+      keywords: ['cyclone', 'storm', 'hurricane', 'wind', 'toofan', 'typhoon'],
+      answer: `**Cyclone / Storm Safety Guide**
+
+**Before:**
+1. Secure loose outdoor items.
+2. Board up windows and doors.
+3. Stock at least 3 days of food, water, and medicine.
+
+**During:**
+1. Stay indoors away from windows.
+2. If flooding is imminent, move to upper floors.
+3. Listen to official broadcasts for updates.
+
+**After:**
+1. Don't go out until the all-clear is given.
+2. Watch for fallen power lines and structural damage.
+3. Document damage for insurance.
+
+Emergency: 112 | IMD Storm Alerts: imd.gov.in`,
+    },
+    {
+      keywords: ['landslide', 'mudslide', 'hill', 'slope'],
+      answer: `**Landslide Safety Guide**
+
+**Warning signs:** Cracking sounds, tilting trees, water seeping from hillside.
+
+**During:**
+1. Evacuate immediately — move perpendicular to the slide path.
+2. Avoid river valleys and low-lying areas.
+3. If trapped, signal rescuers with a torch or whistle.
+
+**After:**
+1. Stay away until geologists declare it safe.
+2. Check for gas leaks and structural damage.
+
+Emergency: 112 | NDRF Helpline: 011-24363260`,
+    },
+    {
+      keywords: ['medical', 'first aid', 'injury', 'injured', 'chot', 'hurt', 'wound'],
+      answer: `**First Aid & Medical Emergency**
+
+**Basic First Aid Steps:**
+1. Call 108 (Ambulance) or 112 immediately.
+2. Do NOT move a seriously injured person unless in danger.
+3. Apply firm pressure to bleeding wounds with a clean cloth.
+4. For unconscious but breathing: recovery position (on their side).
+5. CPR if not breathing — 30 chest compressions, 2 rescue breaths.
+
+**Emergency Numbers:**
+- Ambulance: 108
+- National Emergency: 112
+- Poison Control: 1800-11-9090`,
+    },
+    {
+      keywords: ['number', 'helpline', 'contact', 'call', 'emergency', 'phone'],
+      answer: `**India Emergency Helpline Numbers**
+
+- 🚨 National Emergency: **112**
+- 🚒 Fire: **101**
+- 🚑 Ambulance: **108**
+- 👮 Police: **100**
+- 🌊 Disaster Management: **1078**
+- 👶 Child Helpline: **1098**
+- 👩 Women Helpline: **1091**
+- ☎️ Poison Control: **1800-11-9090**
+
+Save these numbers offline in case of emergency!`,
+    },
+    {
+      keywords: ['prepare', 'kit', 'bag', 'ready', 'supply', 'taiyar'],
+      answer: `**Emergency Preparedness Kit**
+
+Pack a "Go Bag" with:
+1. Water — 3 litres per person per day (3-day supply).
+2. Non-perishable food (biscuits, dry fruits, canned goods).
+3. Torch + extra batteries.
+4. First aid kit + any prescription medicines.
+5. Copies of important documents (ID, insurance, contacts).
+6. Cash (small denominations).
+7. Whistle and dust masks.
+8. Phone charger / power bank.
+
+Keep it ready and accessible!`,
+    },
+  ]
+
+  const lower = userMessage.toLowerCase()
+  const matched = LOCAL_KB.find(entry =>
+    entry.keywords.some(kw => lower.includes(kw)),
+  )
+
+  // If no API key, use local knowledge base
   if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
-    console.warn('[GeminiChat] ⚠️ No API key configured')
-    return 'I am currently unavailable. Please check back later or call the emergency helpline at 112.'
+    if (matched) return matched.answer
+    return `I can help with disaster safety for: Earthquake, Flood, Fire, Cyclone, Landslide, Medical emergencies, and Emergency Numbers. Please ask about any of these topics!\n\n🆘 For immediate life-threatening emergencies, call **112** now.`
   }
 
   const systemPrompt = CHATBOT_SYSTEM_PROMPT(language)

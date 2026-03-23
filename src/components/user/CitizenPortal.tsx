@@ -23,6 +23,7 @@ interface CitizenPortalProps {
   incidentDraft: IncidentDraft
   submittedIncidents: Incident[]
   lastSubmittedId: string | null
+  submitStatusMsg: string | null
   isSubmitting: boolean
   updateIncidentField: <K extends keyof IncidentDraft>(field: K, value: IncidentDraft[K]) => void
   submitIncident: () => void
@@ -59,14 +60,18 @@ export const CitizenPortal = (props: CitizenPortalProps) => {
     { id: 4, label: t('portal.tabs.safeRoute'), icon: <Navigation size={16}/> }
   ]
 
-  const handleIncidentSubmit = (e: FormEvent) => { 
-    e.preventDefault(); 
+  const handleIncidentSubmit = async (e: FormEvent) => {
+    e.preventDefault()
     if (wizardStep < 3) {
       setWizardStep(p => p + 1)
       return
     }
-    props.submitIncident() 
-    setWizardStep(4) // success
+    // submitIncident returns true if this was a duplicate (merged), false if new
+    const isDuplicate = await props.submitIncident()
+    if (!isDuplicate) {
+      setWizardStep(4) // success screen
+    }
+    // If duplicate, stay on step 3 — the amber banner will appear via submitStatusMsg
   }
   const handleVolunteerSubmit = (e: FormEvent) => { e.preventDefault(); props.submitVolunteer() }
   const handleTrack = (e: FormEvent) => { e.preventDefault(); props.trackReport() }
@@ -118,6 +123,14 @@ export const CitizenPortal = (props: CitizenPortalProps) => {
                   <p className="text-center text-brand-300 text-sm font-medium uppercase tracking-widest mt-4">
                     {t('portal.wizard.step', { current: wizardStep, total: 3 })}
                   </p>
+                </div>
+              )}
+
+              {/* Duplicate dispatch banner */}
+              {props.submitStatusMsg && (
+                <div className="mb-6 p-4 bg-amber-500/15 border border-amber-500/30 rounded-xl text-amber-300 font-semibold text-sm flex items-start gap-3">
+                  <span className="text-xl">🚨</span>
+                  <span>{props.submitStatusMsg}</span>
                 </div>
               )}
 

@@ -3,6 +3,7 @@ import { useSharedReports } from '../context/ReportsContext'
 import { useTranslation } from 'react-i18next'
 import {
   deriveCoords,
+  mergeIncidentsByLocation,
 } from '../utils/reportUtils'
 import type { Report } from '../types/report'
 
@@ -131,7 +132,7 @@ const DISASTER_OPTIONS = [
 export const useUserLanding = () => {
   const { i18n } = useTranslation()
   /* Shared reports context — same array the admin dashboard reads */
-  const { addReport } = useSharedReports()
+  const { reports, addReport, updateReport } = useSharedReports()
   /* Clock */
   const [clock, setClock] = useState(() => new Date().toLocaleTimeString('en-IN', { hour12: false }))
 
@@ -154,6 +155,9 @@ export const useUserLanding = () => {
     reporterPhone: '',
     reporterEmail: '',
   })
+
+  /* Submission status (shown in wizard success area) */
+  const [submitStatusMsg, setSubmitStatusMsg] = useState<string | null>(null)
 
   /* ─── Centralized incidents array (live feed source of truth) ─── */
   const [submittedIncidents, setSubmittedIncidents] = useState<Incident[]>([])
@@ -222,16 +226,27 @@ export const useUserLanding = () => {
    *
    * Also adds an isSubmitting guard to prevent duplicate submissions.
    */
-  const submitIncident = useCallback(async () => {
-    if (isSubmitting) return
+  const submitIncident = useCallback(async (): Promise<boolean> => {
+    if (isSubmitting) return false
     setIsSubmitting(true)
     setLastSubmittedId(null)
+    setSubmitStatusMsg(null)
 
-    // Generate ONE unique ID
     const incidentId = `RQ-${Date.now()}`
 
-    console.log('[DEBUG][submitIncident] User-selected severity:', incidentDraft.severity)
-    console.log('[DEBUG][submitIncident] Incident ID:', incidentId)
+    // ─── Duplicate detection BEFORE Gemini call ───
+    const coords = await deriveCoords(incidentDraft.location)
+    const { isDuplicate, existingReport } = mergeIncidentsByLocation(coords, reports)
+
+    if (isDuplicate && existingReport) {
+      updateReport(existingReport.id, {
+        peopleAffected: existingReport.peopleAffected + 1,
+      })
+      setSubmitStatusMsg('🚨 Help has already been dispatched to your location. Stay safe.')
+      setIsSubmitting(false)
+      return true // signals duplicate to caller
+    }
+    // ────────────────────────────────────────────────
 
     // Build the local incident object immediately (for user page feed)
     const newIncident: Incident = {
@@ -247,18 +262,12 @@ export const useUserLanding = () => {
       reporterEmail: incidentDraft.anonymous ? '' : incidentDraft.reporterEmail,
     }
 
-    // Prepend to local user-page feed
     setSubmittedIncidents(prev => [newIncident, ...prev])
     setLastSubmittedId(incidentId)
 
     // ─── Call Gemini AI for severity analysis ───
     const { analyzeDisasterReport } = await import('../services/geminiService')
     const createdAt = new Date().toISOString()
-
-    console.log('\n🤖 [submitIncident] Calling Gemini AI for severity analysis...')
-    console.log('🤖 [submitIncident] Description:', incidentDraft.description)
-    console.log('🤖 [submitIncident] Location:', incidentDraft.location)
-    console.log('🤖 [submitIncident] Disaster type:', incidentDraft.disasterType)
 
     const aiResult = await analyzeDisasterReport(
       incidentDraft.description,
@@ -268,24 +277,11 @@ export const useUserLanding = () => {
       i18n.language
     )
 
-    console.log('\n✅ [submitIncident] AI Analysis Complete!')
-    console.log('   🎯 Priority Score:', aiResult.priorityScore, '/ 100')
-    console.log('   🏷️  Priority Label:', aiResult.priorityLabel)
-    console.log('   🔥 Disaster Type:', aiResult.disasterType)
-    console.log('   👥 People Affected (AI estimated):', aiResult.peopleAffected)
-    console.log('   🚑 Recommended Action:', aiResult.recommendedAction)
-    console.log('   📊 Explanation:', aiResult.priorityExplanation)
-
-    // Use user-selected severity if provided, otherwise use AI severity
     const finalSeverity = (incidentDraft.severity || aiResult.priorityLabel) as import('../types/report').PriorityLabel
 
-    // Update the local incident with actual AI severity
     setSubmittedIncidents(prev =>
       prev.map(inc => inc.id === incidentId ? { ...inc, severity: finalSeverity } : inc)
     )
-
-    console.log('   📋 Final severity (displayed):', finalSeverity)
-    console.log('   👥 People affected (AI):', aiResult.peopleAffected)
 
     const sharedReport: Report = {
       id: incidentId,
@@ -298,7 +294,7 @@ export const useUserLanding = () => {
       disasterType: aiResult.disasterType,
       recommendedAction: aiResult.recommendedAction,
       priorityExplanation: aiResult.priorityExplanation,
-      coords: await deriveCoords(incidentDraft.location),
+      coords,
       createdAt,
       source: 'Citizen',
     }
@@ -323,7 +319,8 @@ export const useUserLanding = () => {
 
     setIsSubmitting(false)
     setTimeout(() => setLastSubmittedId(null), 6000)
-  }, [isSubmitting, incidentDraft, addReport])
+    return false // not a duplicate
+  }, [isSubmitting, incidentDraft, addReport, updateReport, reports])
 
   /* Tracking */
   const trackReport = useCallback(() => {
@@ -395,6 +392,7 @@ export const useUserLanding = () => {
     incidentDraft,
     submittedIncidents,
     lastSubmittedId,
+    submitStatusMsg,
     isSubmitting,
     updateIncidentField,
     submitIncident,

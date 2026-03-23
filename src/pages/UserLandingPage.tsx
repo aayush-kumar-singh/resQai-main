@@ -29,6 +29,7 @@ export const UserLandingPage = () => {
           incidentDraft={landing.incidentDraft}
           submittedIncidents={landing.submittedIncidents}
           lastSubmittedId={landing.lastSubmittedId}
+          submitStatusMsg={landing.submitStatusMsg}
           isSubmitting={landing.isSubmitting}
           updateIncidentField={landing.updateIncidentField}
           submitIncident={landing.submitIncident}
