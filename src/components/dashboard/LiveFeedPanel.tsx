@@ -1,7 +1,6 @@
-import type { CSSProperties } from 'react'
 import { DISASTER_TYPES } from '../../data/reportData'
 import type { DisasterFilter, PriorityFilter, Report } from '../../types/report'
-import { getPriorityClass, getRelativeTime, truncateMessage } from '../../utils/reportUtils'
+import {  getRelativeTime, truncateMessage } from '../../utils/reportUtils'
 import { Filter, Clock, Activity, Users, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 

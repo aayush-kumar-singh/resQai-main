@@ -66,9 +66,9 @@ export const CitizenPortal = (props: CitizenPortalProps) => {
       setWizardStep(p => p + 1)
       return
     }
-    // submitIncident returns true if this was a duplicate (merged), false if new
-    const isDuplicate = await props.submitIncident()
-    if (!isDuplicate) {
+    // submitIncident should return true if this was a duplicate (merged), false if new
+    await props.submitIncident()
+    if (!props.submitStatusMsg) {
       setWizardStep(4) // success screen
     }
     // If duplicate, stay on step 3 — the amber banner will appear via submitStatusMsg
